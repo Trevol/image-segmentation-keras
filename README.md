@@ -1,4 +1,5 @@
 # Image Segmentation Keras : Implementation of Segnet, FCN, UNet and other models in Keras.
+# https://medium.com/datadriveninvestor/deep-learning-for-image-segmentation-d10d19131113
 
 Implememnation of various Deep Image Segmentation models in keras. 
 
