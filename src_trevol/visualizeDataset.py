@@ -23,24 +23,32 @@ def imageSegmentationGenerator(images_path, segs_path, n_classes):
 
         img = cv2.imread(im_fn)
         seg = cv2.imread(seg_fn)
-        print(np.unique(seg))
 
         seg_img = np.zeros_like(seg)
 
         for c in range(n_classes):
-            seg_img[:, :, 0] += ((seg[:, :, 0] == c) * (colors[c][0])).astype('uint8')
-            seg_img[:, :, 1] += ((seg[:, :, 0] == c) * (colors[c][1])).astype('uint8')
-            seg_img[:, :, 2] += ((seg[:, :, 0] == c) * (colors[c][2])).astype('uint8')
+            class_mask = seg[:, :, 0] == c
+            class_color = colors[c]
+            seg_img[:, :, 0] += np.multiply(class_mask, class_color[0], dtype=np.uint8, casting='unsafe')
+            seg_img[:, :, 1] += np.multiply(class_mask, class_color[1], dtype=np.uint8, casting='unsafe')
+            seg_img[:, :, 2] += np.multiply(class_mask, class_color[2], dtype=np.uint8, casting='unsafe')
 
         cv2.imshow("img", img)
         cv2.imshow("seg_img", seg_img)
-        cv2.waitKey()
+        if cv2.waitKey() == 27:
+            break
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--images", type=str)
-parser.add_argument("--annotations", type=str)
-parser.add_argument("--n_classes", type=int)
-args = parser.parse_args()
+def main():
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("--images", type=str)
+    # parser.add_argument("--annotations", type=str)
+    # parser.add_argument("--n_classes", type=int)
+    # args = parser.parse_args()
+    imagesDir = 'data/dataset1/images_prepped_train/'
+    annotationsDir = 'data/dataset1/annotations_prepped_train/'
+    nClasses = 11
+    imageSegmentationGenerator(imagesDir, annotationsDir, nClasses)
 
-imageSegmentationGenerator(args.images, args.annotations, args.n_classes)
+
+main()
