@@ -69,7 +69,7 @@ def imageSegmentationGenerator(images_path, segs_path, batch_size, n_classes, in
         X = []
         Y = []
         for _ in range(batch_size):
-            im, seg = zipped.next()
+            im, seg = next(zipped)
             X.append(getImageArr(im, input_width, input_height))
             Y.append(getSegmentationArr(seg, n_classes, output_width, output_height))
 
