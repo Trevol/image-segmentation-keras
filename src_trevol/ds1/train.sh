@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ROOT="$(pwd)/.."
+ROOT="$(pwd)/../.."
 
 source $ROOT/venv/bin/activate
 export PYTHONPATH=$PYTHONPATH:$ROOT

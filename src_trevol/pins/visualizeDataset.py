@@ -4,8 +4,10 @@ import cv2
 import random
 import argparse
 
+from src_trevol.pins.colors import RGB
 
-def imageSegmentationGenerator(images_path, segs_path, n_classes):
+
+def imageSegmentationGenerator(images_path, segs_path, n_classes, colors=None):
     assert images_path[-1] == '/'
     assert segs_path[-1] == '/'
 
@@ -14,12 +16,13 @@ def imageSegmentationGenerator(images_path, segs_path, n_classes):
     segmentations = glob.glob(segs_path + "*.jpg") + glob.glob(segs_path + "*.png") + glob.glob(segs_path + "*.jpeg")
     segmentations.sort()
 
-    colors = [(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) for _ in range(n_classes)]
+    colors = colors or [(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) for _ in
+                        range(n_classes)]
 
     assert len(images) == len(segmentations)
 
     for im_fn, seg_fn in zip(images, segmentations):
-        assert (im_fn.split('/')[-1] == seg_fn.split('/')[-1])
+        assert im_fn.split('/')[-1].split('.')[0] == seg_fn.split('/')[-1].split('.')[0]
 
         img = cv2.imread(im_fn)
         seg = cv2.imread(seg_fn)
@@ -40,15 +43,11 @@ def imageSegmentationGenerator(images_path, segs_path, n_classes):
 
 
 def main():
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("--images", type=str)
-    # parser.add_argument("--annotations", type=str)
-    # parser.add_argument("--n_classes", type=int)
-    # args = parser.parse_args()
-    imagesDir = 'data/dataset1/images_prepped_train/'
-    annotationsDir = 'data/dataset1/annotations_prepped_train/'
-    nClasses = 11
-    imageSegmentationGenerator(imagesDir, annotationsDir, nClasses)
+    imagesDir = 'dataset/image/'
+    annotationsDir = 'dataset/multi_class_masks/'
+    nClasses = 6
+    colors = RGB
+    imageSegmentationGenerator(imagesDir, annotationsDir, nClasses, colors)
 
 
 main()
