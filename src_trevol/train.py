@@ -46,7 +46,7 @@ def train2():
     model_checkpoint = ModelCheckpoint(chckPtsPath, monitor='loss', verbose=1, save_best_only=False,
                                        save_weights_only=True)
     reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.2, patience=4, min_lr=0.0001)
-    model.fit_generator(G, steps_per_epoch=3, epochs=2, callbacks=[model_checkpoint])
+    model.fit_generator(G, steps_per_epoch=3000, epochs=20, callbacks=[model_checkpoint])
 
 
 def main():
