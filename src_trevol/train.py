@@ -9,9 +9,13 @@ from src_trevol import MyVGGUnet
 
 
 def train2():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--batch_size", type=int, default=6)
+    args = parser.parse_args()
+
     train_images_path = "dataset1/images_prepped_train/"
     train_segs_path = "dataset1/annotations_prepped_train/"
-    train_batch_size = 6
+    train_batch_size = args.batch_size
     n_classes = 11
     input_height = 384
     input_width = 480
@@ -26,7 +30,7 @@ def train2():
     model.load_weights('checkpoints/ch_2.h5')
 
     model.compile(loss='categorical_crossentropy',
-                  optimizer=Adam(),
+                  optimizer=Adadelta(),
                   metrics=['accuracy'])
 
     print("Model output shape", model.output_shape)
@@ -42,7 +46,7 @@ def train2():
     model_checkpoint = ModelCheckpoint(chckPtsPath, monitor='loss', verbose=1, save_best_only=False,
                                        save_weights_only=True)
     reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.2, patience=4, min_lr=0.0001)
-    model.fit_generator(G, steps_per_epoch=30, epochs=2, callbacks=[model_checkpoint, reduce_lr])
+    model.fit_generator(G, steps_per_epoch=3000, epochs=20, callbacks=[model_checkpoint, reduce_lr])
 
 
 def main():
