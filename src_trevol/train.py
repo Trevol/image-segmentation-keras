@@ -32,8 +32,7 @@ def train2():
     model.compile(loss='categorical_crossentropy',
                   optimizer=Adadelta(),
                   metrics=['accuracy'])
-    print(model.metrics_names)
-    return
+
     print("Model output shape", model.output_shape)
 
     output_height = model.outputHeight
@@ -46,7 +45,7 @@ def train2():
     chckPtsPath = os.path.join(save_weights_path, 'unet_camvid_{epoch}_{loss:.4f}_{accuracy:.4f}.hdf5')
     model_checkpoint = ModelCheckpoint(chckPtsPath, monitor='loss', verbose=1, save_best_only=False,
                                        save_weights_only=True)
-    # reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.2, patience=4, min_lr=0.0001)
+    reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.2, patience=4, min_lr=0.0001)
     model.fit_generator(G, steps_per_epoch=3, epochs=2, callbacks=[model_checkpoint])
 
 
