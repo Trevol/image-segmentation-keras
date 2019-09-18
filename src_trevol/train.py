@@ -27,7 +27,7 @@ def train2():
 
     model = MyVGGUnet.VGGUnet(n_classes, input_height=input_height, input_width=input_width,
                               vgg16NoTopWeights='../data/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
-    model.load_weights('checkpoints/ch_2.h5')
+    model.load_weights('checkpoints/unet_camvid_2_0.1355_0.9260.hdf5')
 
     model.compile(loss='categorical_crossentropy',
                   optimizer=Adadelta(),
