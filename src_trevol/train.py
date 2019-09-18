@@ -42,11 +42,11 @@ def train2():
                                                input_height, input_width, output_height, output_width)
     os.makedirs(save_weights_path, exist_ok=True)
 
-    chckPtsPath = os.path.join(save_weights_path, 'unet_camvid_{epoch}_{loss:.4f}_{acc:.4f}.hdf5')
+    chckPtsPath = os.path.join(save_weights_path, 'unet_camvid_{epoch}_{loss:.4f}_{accuracy:.4f}.hdf5')
     model_checkpoint = ModelCheckpoint(chckPtsPath, monitor='loss', verbose=1, save_best_only=False,
                                        save_weights_only=True)
     reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.2, patience=4, min_lr=0.0001)
-    model.fit_generator(G, steps_per_epoch=3000, epochs=20, callbacks=[model_checkpoint, reduce_lr])
+    model.fit_generator(G, steps_per_epoch=3, epochs=2, callbacks=[model_checkpoint, reduce_lr])
 
 
 def main():
