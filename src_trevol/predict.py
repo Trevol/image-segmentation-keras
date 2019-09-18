@@ -15,13 +15,13 @@ def predict():
     input_width = 480
 
     m = VGGUnet(n_classes, input_height=input_height, input_width=input_width)
-    m.load_weights('checkpoints/ch_2.h5')
+    m.load_weights('checkpoints/unet_camvid_2_0.1355_0.9260.hdf5')
 
     output_height = m.outputHeight
     output_width = m.outputWidth
     print(output_height, output_width)
 
-    images_path = 'dataset1/images_prepped_train/'
+    images_path = 'dataset1/images_prepped_test/'
     images = glob.glob(images_path + "*.jpg") + glob.glob(images_path + "*.png") + glob.glob(images_path + "*.jpeg")
     images.sort()
 
@@ -33,14 +33,13 @@ def predict():
         pr = m.predict(np.array([X]))[0]
 
         pr = pr.reshape((output_height, output_width, n_classes)).argmax(axis=2)
-        seg_img = np.zeros((output_height, output_width, 3))
+        seg_img = np.zeros((output_height, output_width, 3), np.uint8)
         for c in range(n_classes):
             classColor = colors[c]
-            # classMask = pr == c
-            classMask = np.equal(pr, c)
-            seg_img[:, :, 0] += (classMask * (classColor[0])).astype('uint8')
-            seg_img[:, :, 1] += (classMask * (classColor[1])).astype('uint8')
-            seg_img[:, :, 2] += (classMask * (classColor[2])).astype('uint8')
+            classMask = pr == c
+            seg_img[..., 0] += np.multiply(classMask, classColor[0], dtype=np.uint8, casting='unsafe')
+            seg_img[..., 1] += np.multiply(classMask, classColor[1], dtype=np.uint8, casting='unsafe')
+            seg_img[..., 2] += np.multiply(classMask, classColor[2], dtype=np.uint8, casting='unsafe')
         seg_img = cv2.resize(seg_img, (input_width, input_height))
         input = cv2.imread(imgName)
         cv2.imshow('input', input)
