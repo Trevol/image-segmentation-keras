@@ -4,7 +4,8 @@ import cv2
 import random
 import argparse
 
-from src_trevol.pins.colors import RGB, BGR
+from src_trevol.pins.classesMeta import BGR
+from src_trevol.pins.pin_utils import colorizeLabel
 
 
 def imageSegmentationGenerator(images_path, segs_path, n_classes, colors=None):
@@ -26,15 +27,7 @@ def imageSegmentationGenerator(images_path, segs_path, n_classes, colors=None):
 
         img = cv2.imread(im_fn)
         seg = cv2.imread(seg_fn)
-
-        seg_img = np.zeros_like(seg)
-
-        for c in range(n_classes):
-            class_mask = seg[:, :, 0] == c
-            class_color = colors[c]
-            seg_img[:, :, 0] += np.multiply(class_mask, class_color[0], dtype=np.uint8, casting='unsafe')
-            seg_img[:, :, 1] += np.multiply(class_mask, class_color[1], dtype=np.uint8, casting='unsafe')
-            seg_img[:, :, 2] += np.multiply(class_mask, class_color[2], dtype=np.uint8, casting='unsafe')
+        seg_img = colorizeLabel(seg[:, :, 0], colors)
 
         cv2.imshow("img", img)
         cv2.imshow("seg_img", seg_img)

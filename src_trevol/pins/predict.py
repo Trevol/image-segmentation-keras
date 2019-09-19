@@ -6,16 +6,21 @@ import cv2
 import numpy as np
 
 from src_trevol.MyVGGUnet import VGGUnet
-from src_trevol.pins.colors import BGR
-from src_trevol.pins.pin_utils import remainderlessDividable, colorizeLabel
+from src_trevol.pins.classesMeta import BGR, classNames
+from src_trevol.pins.pin_utils import remainderlessDividable, colorizeLabel, putLegend
 
-def drawLegend():
-    pass
+
+def showLegend():
+    img = np.zeros([300, 400, 3])
+    putLegend(img, classNames, BGR)
+    cv2.imshow('Legend', img)
 
 def read_predict_show():
     n_classes = 6
     input_height = remainderlessDividable(1080 // 2, 32, 1)
     input_width = remainderlessDividable(1920 // 2, 32, 1)
+
+    showLegend()
 
     model = VGGUnet(n_classes, input_height=input_height, input_width=input_width)
     model.load_weights('checkpoints/unet_pins_3_0.0038_0.9991.hdf5')
@@ -31,6 +36,8 @@ def read_predict_show():
 
     # annotations_path = 'dataset/multi_class_masks/'
     annotations_path = None
+
+    resultsPath = '/HDD_DATA/Computer_Vision_Task/Computer_Vision_Task/frames_6_unet_multiclass/'
 
     for imgName in images:
         X = LoadBatches.getImageArr(imgName, input_width, input_height)
@@ -55,10 +62,13 @@ def read_predict_show():
         cv2.imshow('input', input)
         cv2.imshow('output', seg_img)
 
-        if cv2.waitKey() == 27:
+        if cv2.waitKey(1) == 27:
             break
-        # outName = imgName.replace(images_path, args.output_path)
-        # cv2.imwrite(outName, seg_img)
+
+        outName = imgName.replace(images_path, resultsPath).replace('.jpg', '.png')
+        cv2.imwrite(outName, seg_img)
+
+    cv2.destroyAllWindows()
 
 
 def main():
