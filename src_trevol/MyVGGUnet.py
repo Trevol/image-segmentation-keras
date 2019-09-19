@@ -54,7 +54,7 @@ def VGGUnet(n_classes, input_height=416, input_width=608, vgg16NoTopWeights=None
 
     if vgg16NoTopWeights:
         vgg = Model(img_input, x)
-        vgg.load_weights(vgg16NoTopWeights)
+        vgg.load_weights(vgg16NoTopWeights, by_name=True)
 
     o = f4
 

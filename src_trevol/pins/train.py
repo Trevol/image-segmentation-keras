@@ -2,16 +2,11 @@ import argparse
 import os
 
 from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
-from keras.optimizers import Adam, Adadelta
+from keras.optimizers import Adadelta
 
 import LoadBatches
 from src_trevol import MyVGGUnet
-
-
-def remainderlessDividable(val, divider, ff):
-    assert divider > 0
-    assert ff == 0 or ff == 1
-    return (val + divider * ff - val % divider)
+from src_trevol.pins.pin_utils import remainderlessDividable
 
 
 def train():
