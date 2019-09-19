@@ -6,3 +6,5 @@ RGB = [
     [0, 0, 128],  # arm_glove
     [128, 0, 128],  # arm_wo_glove
 ]
+
+BGR = [c[::-1] for c in RGB]

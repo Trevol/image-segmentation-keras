@@ -4,7 +4,7 @@ import cv2
 import random
 import argparse
 
-from src_trevol.pins.colors import RGB
+from src_trevol.pins.colors import RGB, BGR
 
 
 def imageSegmentationGenerator(images_path, segs_path, n_classes, colors=None):
@@ -46,7 +46,7 @@ def main():
     imagesDir = 'dataset/image/'
     annotationsDir = 'dataset/multi_class_masks/'
     nClasses = 6
-    colors = RGB
+    colors = BGR
     imageSegmentationGenerator(imagesDir, annotationsDir, nClasses, colors)
 
 

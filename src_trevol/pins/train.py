@@ -8,41 +8,43 @@ import LoadBatches
 from src_trevol import MyVGGUnet
 
 
-def train2():
+def remainderlessDividable(val, divider, ff):
+    assert divider > 0
+    assert ff == 0 or ff == 1
+    return (val + divider * ff - val % divider)
+
+
+def train():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--batch_size", type=int, default=6)
+    parser.add_argument("--batch_size", type=int, default=2)
     args = parser.parse_args()
 
-    train_images_path = "dataset1/images_prepped_train/"
-    train_segs_path = "dataset1/annotations_prepped_train/"
+    train_images_path = "dataset/image/"
+    train_segs_path = "dataset/multi_class_masks/"
     train_batch_size = args.batch_size
-    n_classes = 11
-    input_height = 384
-    input_width = 480
+    n_classes = 6
+    input_height = remainderlessDividable(1080 // 2, 32, 1)
+    input_width = remainderlessDividable(1920 // 2, 32, 1)
 
     save_weights_path = 'checkpoints/'
-    epochs = 10
-
-    optimizer_name = 'adadelta'
 
     model = MyVGGUnet.VGGUnet(n_classes, input_height=input_height, input_width=input_width,
-                              vgg16NoTopWeights='../data/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
-    model.load_weights('checkpoints/unet_camvid_2_0.1355_0.9260.hdf5')
+                              vgg16NoTopWeights='../../data/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
+    # model.load_weights('checkpoints/unet_camvid_2_0.1355_0.9260.hdf5')
 
     model.compile(loss='categorical_crossentropy',
                   optimizer=Adadelta(),
                   metrics=['accuracy'])
 
-    print("Model output shape", model.output_shape)
-
     output_height = model.outputHeight
     output_width = model.outputWidth
+    # print("Model output shape", model.output_shape, (output_height, output_width), (input_height, input_width))
 
     G = LoadBatches.imageSegmentationGenerator(train_images_path, train_segs_path, train_batch_size, n_classes,
                                                input_height, input_width, output_height, output_width)
     os.makedirs(save_weights_path, exist_ok=True)
 
-    chckPtsPath = os.path.join(save_weights_path, 'unet_camvid_{epoch}_{loss:.4f}_{accuracy:.4f}.hdf5')
+    chckPtsPath = os.path.join(save_weights_path, 'unet_pins_{epoch}_{loss:.4f}_{accuracy:.4f}.hdf5')
     model_checkpoint = ModelCheckpoint(chckPtsPath, monitor='loss', verbose=1, save_best_only=False,
                                        save_weights_only=True)
     reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.2, patience=4, min_lr=0.0001)
@@ -50,7 +52,7 @@ def train2():
 
 
 def main():
-    train2()
+    train()
 
 
 if __name__ == '__main__':
