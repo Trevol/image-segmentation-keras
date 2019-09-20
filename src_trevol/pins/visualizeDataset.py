@@ -38,9 +38,7 @@ def imageSegmentationGenerator(images_path, segs_path, n_classes, colors=None):
 def main():
     imagesDir = 'dataset/image/'
     annotationsDir = 'dataset/multi_class_masks/'
-    nClasses = 6
-    colors = BGR
-    imageSegmentationGenerator(imagesDir, annotationsDir, nClasses, colors)
+    imageSegmentationGenerator(imagesDir, annotationsDir, classes=len(BGR), colors=BGR)
 
 
 main()
