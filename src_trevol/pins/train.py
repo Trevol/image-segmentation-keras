@@ -71,11 +71,11 @@ class AugmentedTrainer:
 
     def trainGenerator(self, batchSize, nClasses, trainFolder, imageFolder, maskFolder, imageSize, maskSize,
                        yieldOriginalBatches=False):
-        aug_dict = dict(rotation_range=0,
-                        width_shift_range=0,
-                        height_shift_range=0,
-                        shear_range=0,
-                        zoom_range=0,
+        aug_dict = dict(rotation_range=0.2,
+                        width_shift_range=0.05,
+                        height_shift_range=0.05,
+                        shear_range=0.05,
+                        zoom_range=0.05,
                         horizontal_flip=True,
                         fill_mode='constant',  # 'nearest'
                         cval=0
@@ -133,7 +133,7 @@ class AugmentedTrainer:
         model = MyVGGUnet.VGGUnet(n_classes, input_height=input_height, input_width=input_width,
                                   vgg16NoTopWeights='../../data/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
                                   )
-        model.load_weights('checkpoints/augmented/1/unet_pins_augm_3_0.0062_0.9916.hdf5')
+        # model.load_weights('checkpoints/augmented/1/unet_pins_augm_3_0.0062_0.9916.hdf5')
 
         model.compile(loss='categorical_crossentropy',
                       optimizer=Adadelta(),

@@ -37,8 +37,8 @@ def read_predict_show():
     # annotations_path = 'dataset/multi_class_masks/'
     annotations_path = None
 
-    resultsPath = '/HDD_DATA/Computer_Vision_Task/Computer_Vision_Task/frames_6_unet_multiclass/'
-
+    resultsPath = '/HDD_DATA/Computer_Vision_Task/Computer_Vision_Task/frames_6_unet_multiclass_base_augm/'
+    os.makedirs(resultsPath, exist_ok=True)
     for imgName in images:
         X = LoadBatches.getImageArr(imgName, input_width, input_height)
 
