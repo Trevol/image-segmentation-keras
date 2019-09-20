@@ -23,7 +23,7 @@ def read_predict_show():
     showLegend()
 
     model = VGGUnet(n_classes, input_height=input_height, input_width=input_width)
-    model.load_weights('checkpoints/augmented/2_base_augm/unet_pins_augm_13_0.1143_0.9305.hdf5')
+    model.load_weights('checkpoints/augmented/1/unet_pins_augm_3_0.0062_0.9916.hdf5')
 
     output_height = model.outputHeight
     output_width = model.outputWidth
