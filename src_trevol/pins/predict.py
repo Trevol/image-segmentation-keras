@@ -23,7 +23,7 @@ def read_predict_show():
     showLegend()
 
     model = VGGUnet(n_classes, input_height=input_height, input_width=input_width)
-    model.load_weights('checkpoints/unet_pins_3_0.0038_0.9991.hdf5')
+    model.load_weights('checkpoints/augmented/2_base_augm/unet_pins_augm_13_0.1143_0.9305.hdf5')
 
     output_height = model.outputHeight
     output_width = model.outputWidth
@@ -65,8 +65,8 @@ def read_predict_show():
         if cv2.waitKey(1) == 27:
             break
 
-        outName = imgName.replace(images_path, resultsPath).replace('.jpg', '.png')
-        cv2.imwrite(outName, seg_img)
+        # outName = imgName.replace(images_path, resultsPath).replace('.jpg', '.png')
+        # cv2.imwrite(outName, seg_img)
 
     cv2.destroyAllWindows()
 

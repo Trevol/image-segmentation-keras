@@ -82,7 +82,7 @@ class AugmentedTrainer:
                         )
         seed = 1
         # brightness_range=[0, 15]
-        image_datagen = ImageDataGenerator(**aug_dict, channel_shift_range=60, data_format='channels_first')
+        image_datagen = ImageDataGenerator(**aug_dict, channel_shift_range=5, data_format='channels_first')
         mask_datagen = ImageDataGenerator(**aug_dict)
         image_generator = image_datagen.flow_from_directory(
             trainFolder,
