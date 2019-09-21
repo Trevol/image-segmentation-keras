@@ -54,7 +54,12 @@ class AugmentedTrainer:
         pass
 
     def prepareDataForModel(self, imgBatch, maskBatch, nClasses, maskSize):
-        imgBatch = imgBatch / 255.0
+        # imgBatch = imgBatch / 255.0
+
+        for img in imgBatch:
+            img[2, :, :] -= 103.939
+            img[1, :, :] -= 116.779
+            img[0, :, :] -= 123.68
 
         labelsBatch = []
         height, width = maskSize
