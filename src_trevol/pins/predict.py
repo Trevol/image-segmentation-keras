@@ -15,6 +15,7 @@ def showLegend():
     putLegend(img, classNames, BGR)
     cv2.imshow('Legend', img)
 
+
 def read_predict_show():
     n_classes = 6
     input_height = remainderlessDividable(1080 // 2, 32, 1)
@@ -23,7 +24,7 @@ def read_predict_show():
     showLegend()
 
     model = VGGUnet(n_classes, input_height=input_height, input_width=input_width)
-    model.load_weights('checkpoints/augmented/1/unet_pins_augm_3_0.0062_0.9916.hdf5')
+    model.load_weights('checkpoints/augmented/2_base_augm/unet_pins_augm_13_0.1143_0.9305.hdf5')
 
     output_height = model.outputHeight
     output_width = model.outputWidth
@@ -40,9 +41,12 @@ def read_predict_show():
     resultsPath = '/HDD_DATA/Computer_Vision_Task/Computer_Vision_Task/frames_6_unet_multiclass_base_augm/'
     os.makedirs(resultsPath, exist_ok=True)
     for imgName in images:
-        X = LoadBatches.getImageArr(imgName, input_width, input_height)
+        X = np.float32(cv2.imread(imgName)) / 255
+        X = cv2.resize(X, (input_width, input_height))
+        X = np.moveaxis(X, 2, 0)  # channel_first
+        # X = LoadBatches.getImageArr(imgName, input_width, input_height)
 
-        pr = model.predict(np.array([X]))[0]
+        pr = model.predict(np.expand_dims(X, 0))[0]
         pr = pr.reshape((output_height, output_width, n_classes)).argmax(axis=2)
 
         seg_img = colorizeLabel(pr, BGR)
