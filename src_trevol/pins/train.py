@@ -85,7 +85,7 @@ class AugmentedTrainer:
                         fill_mode='constant',  # 'nearest'
                         cval=0
                         )
-        aug_dict = {}
+        # aug_dict = {}
         seed = 1
         # brightness_range=[0, 15]
         image_datagen = ImageDataGenerator(**aug_dict, channel_shift_range=0, data_format='channels_first')
