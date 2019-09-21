@@ -4,9 +4,11 @@ import glob
 import itertools
 
 
-def getImageArr(path, width, height, imgNorm="sub_mean", ordering='channels_first'):
+def getImageArr(path, width, height, imgNorm="sub_mean", ordering='channels_first', as_rgb=False):
     try:
         img = cv2.imread(path, 1)
+        if as_rgb:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         if imgNorm == "sub_and_divide":
             img = np.float32(cv2.resize(img, (width, height))) / 127.5 - 1

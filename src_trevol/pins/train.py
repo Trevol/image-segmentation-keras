@@ -74,6 +74,31 @@ class AugmentedTrainer:
 
         return imgBatch, labelsBatch
 
+    def normalizeRgbImage(self, img):
+        assert img.shape[0] == 3
+        normalized = np.empty_like(img)
+        normalized[0, :, :] = img[0, :, :] - 123.68
+        normalized[1, :, :] = img[1, :, :] - 116.779
+        normalized[2, :, :] = img[2, :, :] - 103.939
+        return normalized
+
+    def maskToLabel(self, mask, nClasses, height, width):
+        labels = np.zeros((height, width, nClasses))
+        mask = cv2.resize(mask, (width, height))
+        for c in range(nClasses):
+            labels[:, :, c] = (mask == c).astype(int)
+        labels = np.reshape(labels, (width * height, nClasses))
+        return labels
+
+    def batchMaskToLabel(self, maskBatch, nClasses, maskSize):
+        labelsBatch = []
+        height, width = maskSize
+        for mask in maskBatch:
+            labels = self.maskToLabel(mask, nClasses, height, width)
+            labelsBatch.append(labels)
+        labelsBatch = np.array(labelsBatch, dtype=np.int32)
+        return labelsBatch
+
     def trainGenerator(self, batchSize, nClasses, trainFolder, imageFolder, maskFolder, imageSize, maskSize,
                        yieldOriginalBatches=False):
         aug_dict = dict(rotation_range=0.2,
@@ -85,10 +110,12 @@ class AugmentedTrainer:
                         fill_mode='constant',  # 'nearest'
                         cval=0
                         )
-        # aug_dict = {}
+        aug_dict = {}
         seed = 1
-        # brightness_range=[0, 15]
-        image_datagen = ImageDataGenerator(**aug_dict, channel_shift_range=0, data_format='channels_first')
+        image_datagen = ImageDataGenerator(**aug_dict,
+                                           data_format='channels_first',
+                                           preprocessing_function=self.normalizeRgbImage
+                                           )
         mask_datagen = ImageDataGenerator(**aug_dict)
         image_generator = image_datagen.flow_from_directory(
             trainFolder,
@@ -97,8 +124,6 @@ class AugmentedTrainer:
             color_mode='rgb',
             target_size=imageSize,
             batch_size=batchSize,
-            save_to_dir=None,
-            save_prefix=None,
             seed=seed)
 
         mask_generator = mask_datagen.flow_from_directory(
@@ -108,18 +133,14 @@ class AugmentedTrainer:
             color_mode='grayscale',
             target_size=imageSize,
             batch_size=batchSize,
-            save_to_dir=None,
-            save_prefix=None,
             interpolation='nearest',
             seed=seed)
 
         train_generator = zip(image_generator, mask_generator)
-        for originalImgBatch, originalMaskBatch in train_generator:
-            imgBatch, maskBatch = self.prepareDataForModel(originalImgBatch, originalMaskBatch, nClasses, maskSize)
-            if yieldOriginalBatches:
-                yield imgBatch, maskBatch, originalImgBatch, originalMaskBatch
-            else:
-                yield imgBatch, maskBatch
+
+        for imgBatch, maskBatch in train_generator:
+            labelBatch = self.batchMaskToLabel(maskBatch, nClasses, maskSize)
+            yield imgBatch, labelBatch
 
     def train(self):
         parser = argparse.ArgumentParser()
@@ -134,7 +155,7 @@ class AugmentedTrainer:
         input_height = remainderlessDividable(1080 // 2, 32, 1)
         input_width = remainderlessDividable(1920 // 2, 32, 1)
 
-        save_weights_path = 'checkpoints/augmented'
+        save_weights_path = 'checkpoints/not_augmented'
 
         model = MyVGGUnet.VGGUnet(n_classes, input_height=input_height, input_width=input_width,
                                   vgg16NoTopWeights='../../data/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
@@ -159,7 +180,7 @@ class AugmentedTrainer:
 
         os.makedirs(save_weights_path, exist_ok=True)
 
-        chckPtsPath = os.path.join(save_weights_path, 'unet_pins_augm_{epoch}_{loss:.4f}_{accuracy:.4f}.hdf5')
+        chckPtsPath = os.path.join(save_weights_path, 'unet_pins_augm_{epoch}_{loss:.5f}_{accuracy:.5f}.hdf5')
         model_checkpoint = ModelCheckpoint(chckPtsPath, monitor='loss', verbose=1, save_best_only=False,
                                            save_weights_only=True)
         model.fit_generator(gen, steps_per_epoch=3000, epochs=20, callbacks=[model_checkpoint])
