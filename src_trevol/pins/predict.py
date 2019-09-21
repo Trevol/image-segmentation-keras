@@ -24,7 +24,7 @@ def read_predict_show():
     showLegend()
 
     model = VGGUnet(n_classes, input_height=input_height, input_width=input_width)
-    model.load_weights('checkpoints/augmented/unet_pins_augm_2_0.0089_0.9934.hdf5')
+    model.load_weights('checkpoints/augmented/3/unet_pins_augm_20_0.1425_0.9242.hdf5')
 
     output_height = model.outputHeight
     output_width = model.outputWidth
@@ -41,10 +41,10 @@ def read_predict_show():
     resultsPath = '/HDD_DATA/Computer_Vision_Task/Computer_Vision_Task/frames_6_unet_multiclass_base_augm/'
     os.makedirs(resultsPath, exist_ok=True)
     for imgName in images:
-        X = np.float32(cv2.imread(imgName)) / 255
-        X = cv2.resize(X, (input_width, input_height))
-        X = np.moveaxis(X, 2, 0)  # channel_first
-        # X = LoadBatches.getImageArr(imgName, input_width, input_height)
+        # X = np.float32(cv2.imread(imgName)) / 255
+        # X = cv2.resize(X, (input_width, input_height))
+        # X = np.moveaxis(X, 2, 0)  # channel_first
+        X = LoadBatches.getImageArr(imgName, input_width, input_height, imgNorm="sub_mean", ordering='channels_first')
 
         pr = model.predict(np.expand_dims(X, 0))[0]
         pr = pr.reshape((output_height, output_width, n_classes)).argmax(axis=2)
