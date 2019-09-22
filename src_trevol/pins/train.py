@@ -43,7 +43,7 @@ def base_train():
                                                input_height, input_width, output_height, output_width)
     os.makedirs(save_weights_path, exist_ok=True)
 
-    chckPtsPath = os.path.join(save_weights_path, 'unet_pins_{epoch}_{loss:.5f}_{accuracy:.5f}.hdf5')
+    chckPtsPath = os.path.join(save_weights_path, 'unet_pins_{epoch}_{loss:.6f}_{accuracy:.6f}.hdf5')
     model_checkpoint = ModelCheckpoint(chckPtsPath, monitor='loss', verbose=1, save_best_only=False,
                                        save_weights_only=True)
     model.fit_generator(G, steps_per_epoch=3000, epochs=20, callbacks=[model_checkpoint])
