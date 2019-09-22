@@ -13,7 +13,7 @@ from src_trevol.pins.classesMeta import BGR
 from src_trevol.pins.pin_utils import remainderlessDividable, colorizeLabel
 
 
-def train():
+def base_train():
     parser = argparse.ArgumentParser()
     parser.add_argument("--batch_size", type=int, default=2)
     args = parser.parse_args()
@@ -25,7 +25,7 @@ def train():
     input_height = remainderlessDividable(1080 // 2, 32, 1)
     input_width = remainderlessDividable(1920 // 2, 32, 1)
 
-    save_weights_path = 'checkpoints/'
+    save_weights_path = 'checkpoints/not_augmented_base'
 
     model = MyVGGUnet.VGGUnet(n_classes, input_height=input_height, input_width=input_width,
                               vgg16NoTopWeights='../../data/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
@@ -43,7 +43,7 @@ def train():
                                                input_height, input_width, output_height, output_width)
     os.makedirs(save_weights_path, exist_ok=True)
 
-    chckPtsPath = os.path.join(save_weights_path, 'unet_pins_{epoch}_{loss:.4f}_{accuracy:.4f}.hdf5')
+    chckPtsPath = os.path.join(save_weights_path, 'unet_pins_{epoch}_{loss:.5f}_{accuracy:.5f}.hdf5')
     model_checkpoint = ModelCheckpoint(chckPtsPath, monitor='loss', verbose=1, save_best_only=False,
                                        save_weights_only=True)
     model.fit_generator(G, steps_per_epoch=3000, epochs=20, callbacks=[model_checkpoint])
@@ -200,7 +200,8 @@ class AugmentedTrainer:
 
 
 def main():
-    AugmentedTrainer().train()
+    # AugmentedTrainer().train()
+    base_train()
 
 
 if __name__ == '__main__':
