@@ -25,10 +25,12 @@ def base_train():
     input_height = remainderlessDividable(1080 // 2, 32, 1)
     input_width = remainderlessDividable(1920 // 2, 32, 1)
 
-    save_weights_path = 'checkpoints/not_augmented_base'
+    save_weights_path = 'checkpoints/not_augmented_base_from_scratch'
 
+    # vgg16NoTopWeights = '../../data/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
+    vgg16NoTopWeights = None
     model = MyVGGUnet.VGGUnet(n_classes, input_height=input_height, input_width=input_width,
-                              vgg16NoTopWeights='../../data/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
+                              vgg16NoTopWeights=vgg16NoTopWeights)
     # model.load_weights('checkpoints/unet_camvid_2_0.1355_0.9260.hdf5')
 
     model.compile(loss='categorical_crossentropy',

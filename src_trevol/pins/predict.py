@@ -88,7 +88,7 @@ def read_predict_show():
             # cv2.imwrite(outName, seg_img)
 
             outName = imgName.replace(images_path, resultsPath).replace('.jpg', '.npy')
-            np.save(outName, probabilities)
+            # np.save(outName, probabilities)
 
             if cv2.waitKey(1) == 27:
                 break
@@ -108,12 +108,31 @@ def view_base_train_results():
         os.path.join(root, 'unet_multiclass_no_augm_base_18', '*.png'),
         os.path.join(root, 'unet_multiclass_no_augm_base_20', '*.png')
     ]
+
+    classProbabilitesPath = os.path.join(root, 'unet_multiclass_no_augm_base_20')
+    classProbabilites = None
+
+    # init windows
+    def showPointClassProbabilities(evt, x, y, flags, param):
+        if evt == cv2.EVENT_LBUTTONDOWN:
+            print(classProbabilites[y, x])
+
+    for i in range(len(paths)):
+        windowName = str(i)
+        cv2.namedWindow(windowName)
+        cv2.setMouseCallback(windowName, showPointClassProbabilities)
+
     imagesPaths = [sorted(glob.glob(p)) for p in paths]
     imagesCount = len(imagesPaths[0])
     for i in range(imagesCount):
         pathsOfImageI = [images[i] for images in imagesPaths]
+        # load classProbabilities
+        probaPath = os.path.join(classProbabilitesPath, os.path.basename(pathsOfImageI[0]).replace('.jpg', '.npy'))
+        classProbabilites = np.load(probaPath)
+        print(classProbabilites.shape, classProbabilites.dtype, classProbabilites.min(), classProbabilites.max())
         for windowInd, path in enumerate(pathsOfImageI):
             image = cv2.imread(path)
+            image = cv2.resize(image, (496, 272))
             windowName = str(windowInd)
             cv2.imshow(windowName, image)
             parentDir, fileName = path.split('/')[-2:]
@@ -126,11 +145,9 @@ def view_base_train_results():
     cv2.destroyAllWindows()
 
 
-
-
 def main():
-    read_predict_show()
-    # view_base_train_results()
+    # read_predict_show()
+    view_base_train_results()
 
 
 main()
