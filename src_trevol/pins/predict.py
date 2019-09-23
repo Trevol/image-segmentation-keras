@@ -23,7 +23,7 @@ def read_predict_show():
 
     framesConfig = [
         FramesDesc(imagesPath='/HDD_DATA/Computer_Vision_Task/frames_6/',
-                   resultsPath='/HDD_DATA/Computer_Vision_Task/frames_6/unet_multiclass_no_augm_base_20/',
+                   resultsPath='/HDD_DATA/Computer_Vision_Task/frames_6/not_augmented_base_from_scratch_10/',
                    height=1080 // 2,
                    width=1920 // 2),
         # FramesDesc(imagesPath='/home/trevol/HDD_DATA/Computer_Vision_Task/Computer_Vision_Task/frames_2/',
@@ -32,7 +32,7 @@ def read_predict_show():
         #            width=1920 // 2)
     ]
 
-    weights = 'checkpoints/not_augmented_base/unet_pins_20_0.00001_1.00000.hdf5'
+    weights = 'checkpoints/not_augmented_base_from_scratch/unet_pins_10_0.000041_1.000000.hdf5.hdf5'
     n_classes = 6
 
     for images_path, resultsPath, input_height, input_width in framesConfig:
@@ -84,8 +84,8 @@ def read_predict_show():
             cv2.imshow('input', input)
             cv2.imshow('output', seg_img)
 
-            # outName = imgName.replace(images_path, resultsPath).replace('.jpg', '.png')
-            # cv2.imwrite(outName, seg_img)
+            outName = imgName.replace(images_path, resultsPath).replace('.jpg', '.png')
+            cv2.imwrite(outName, seg_img)
 
             outName = imgName.replace(images_path, resultsPath).replace('.jpg', '.npy')
             # np.save(outName, probabilities)
@@ -146,8 +146,8 @@ def view_base_train_results():
 
 
 def main():
-    # read_predict_show()
-    view_base_train_results()
+    read_predict_show()
+    # view_base_train_results()
 
 
 main()
