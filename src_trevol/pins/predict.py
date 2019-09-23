@@ -32,7 +32,7 @@ def read_predict_show():
         #            width=1920 // 2)
     ]
 
-    weights = 'checkpoints/not_augmented_base_from_scratch/unet_pins_10_0.000041_1.000000.hdf5.hdf5'
+    weights = 'checkpoints/not_augmented_base_from_scratch/unet_pins_10_0.000041_1.000000.hdf5'
     n_classes = 6
 
     for images_path, resultsPath, input_height, input_width in framesConfig:
@@ -68,7 +68,7 @@ def read_predict_show():
             pr = probabilities.argmax(axis=2)
 
             seg_img = colorizeLabel(pr, BGR)
-            seg_img = cv2.resize(seg_img, (input_width, input_height))
+            # seg_img = cv2.resize(seg_img, (input_width, input_height))
 
             input = cv2.imread(imgName)
 
