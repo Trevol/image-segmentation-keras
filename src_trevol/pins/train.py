@@ -27,7 +27,7 @@ def base_train():
 
     save_weights_path = 'checkpoints/not_augmented_base_vgg16_more_images'
 
-    vgg16NoTopWeights = '../../data/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
+    vgg16NoTopWeights = 'vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
     # vgg16NoTopWeights = None
     model = MyVGGUnet.VGGUnet(n_classes, input_height=input_height, input_width=input_width,
                               vgg16NoTopWeights=vgg16NoTopWeights)
