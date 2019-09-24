@@ -23,7 +23,7 @@ def read_predict_show():
 
     framesConfig = [
         FramesDesc(imagesPath='/HDD_DATA/Computer_Vision_Task/frames_6/',
-                   resultsPath='/HDD_DATA/Computer_Vision_Task/frames_6/not_augmented_base_vgg16_more_images_15/',
+                   resultsPath='/HDD_DATA/Computer_Vision_Task/frames_6/not_augmented_base_vgg16_more_images_16/',
                    height=1080 // 2,
                    width=1920 // 2),
         # FramesDesc(imagesPath='/home/trevol/HDD_DATA/Computer_Vision_Task/Computer_Vision_Task/frames_2/',
@@ -32,7 +32,7 @@ def read_predict_show():
         #            width=1920 // 2)
     ]
 
-    weights = 'checkpoints/not_augmented_base_vgg16_more_images/unet_pins_15_0.000027_1.000000.hdf5'
+    weights = 'checkpoints/not_augmented_base_vgg16_more_images/unet_pins_16_0.000024_1.000000.hdf5'
     n_classes = 6
 
     for images_path, resultsPath, input_height, input_width in framesConfig:
@@ -147,8 +147,8 @@ def view_base_train_results():
 
 
 def main():
-    # read_predict_show()
-    view_base_train_results()
+    read_predict_show()
+    # view_base_train_results()
 
 
 main()
