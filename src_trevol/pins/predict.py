@@ -23,7 +23,7 @@ def read_predict_show():
 
     framesConfig = [
         FramesDesc(imagesPath='/HDD_DATA/Computer_Vision_Task/frames_6/',
-                   resultsPath='/HDD_DATA/Computer_Vision_Task/frames_6/not_augmented_base_from_scratch_10/',
+                   resultsPath='/HDD_DATA/Computer_Vision_Task/frames_6/not_augmented_base_vgg16_more_images_15/',
                    height=1080 // 2,
                    width=1920 // 2),
         # FramesDesc(imagesPath='/home/trevol/HDD_DATA/Computer_Vision_Task/Computer_Vision_Task/frames_2/',
@@ -32,7 +32,7 @@ def read_predict_show():
         #            width=1920 // 2)
     ]
 
-    weights = 'checkpoints/not_augmented_base_from_scratch/unet_pins_10_0.000041_1.000000.hdf5'
+    weights = 'checkpoints/not_augmented_base_vgg16_more_images/unet_pins_15_0.000027_1.000000.hdf5'
     n_classes = 6
 
     for images_path, resultsPath, input_height, input_width in framesConfig:
@@ -87,7 +87,7 @@ def read_predict_show():
             outName = imgName.replace(images_path, resultsPath).replace('.jpg', '.png')
             cv2.imwrite(outName, seg_img)
 
-            outName = imgName.replace(images_path, resultsPath).replace('.jpg', '.npy')
+            # outName = imgName.replace(images_path, resultsPath).replace('.jpg', '.npy')
             # np.save(outName, probabilities)
 
             if cv2.waitKey(1) == 27:
@@ -102,11 +102,12 @@ def view_base_train_results():
     root = '/HDD_DATA/Computer_Vision_Task/frames_6'
     paths = [
         os.path.join(root, '*.jpg'),
-        os.path.join(root, 'unet_multiclass_no_augm_base', '*.png'),
-        os.path.join(root, 'unet_multiclass_no_augm_base_13', '*.png'),
-        os.path.join(root, 'unet_multiclass_no_augm_base_15', '*.png'),
-        os.path.join(root, 'unet_multiclass_no_augm_base_18', '*.png'),
-        os.path.join(root, 'unet_multiclass_no_augm_base_20', '*.png')
+        os.path.join(root, 'not_augmented_base_vgg16_more_images_15', '*.png'),
+        # os.path.join(root, 'unet_multiclass_no_augm_base', '*.png'),
+        # os.path.join(root, 'unet_multiclass_no_augm_base_13', '*.png'),
+        # os.path.join(root, 'unet_multiclass_no_augm_base_15', '*.png'),
+        # os.path.join(root, 'unet_multiclass_no_augm_base_18', '*.png'),
+        # os.path.join(root, 'unet_multiclass_no_augm_base_20', '*.png')
     ]
 
     classProbabilitesPath = os.path.join(root, 'unet_multiclass_no_augm_base_20')
@@ -124,7 +125,7 @@ def view_base_train_results():
 
     imagesPaths = [sorted(glob.glob(p)) for p in paths]
     imagesCount = len(imagesPaths[0])
-    for i in range(imagesCount):
+    for i in range(3400, imagesCount):
         pathsOfImageI = [images[i] for images in imagesPaths]
         # load classProbabilities
         probaPath = os.path.join(classProbabilitesPath, os.path.basename(pathsOfImageI[0]).replace('.jpg', '.npy'))
@@ -132,22 +133,22 @@ def view_base_train_results():
         print(classProbabilites.shape, classProbabilites.dtype, classProbabilites.min(), classProbabilites.max())
         for windowInd, path in enumerate(pathsOfImageI):
             image = cv2.imread(path)
-            image = cv2.resize(image, (496, 272))
+            # image = cv2.resize(image, (496, 272))
             windowName = str(windowInd)
             cv2.imshow(windowName, image)
             parentDir, fileName = path.split('/')[-2:]
             parentDirId = parentDir.split('_')[-1]
             cv2.setWindowTitle(windowName, f"{parentDirId}   {fileName}")
 
-        if cv2.waitKey() == 27:
+        if cv2.waitKey(1) == 27:
             break
 
     cv2.destroyAllWindows()
 
 
 def main():
-    read_predict_show()
-    # view_base_train_results()
+    # read_predict_show()
+    view_base_train_results()
 
 
 main()

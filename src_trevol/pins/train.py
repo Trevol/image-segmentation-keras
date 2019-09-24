@@ -31,7 +31,7 @@ def base_train():
     # vgg16NoTopWeights = None
     model = MyVGGUnet.VGGUnet(n_classes, input_height=input_height, input_width=input_width,
                               vgg16NoTopWeights=vgg16NoTopWeights)
-    # model.load_weights('checkpoints/not_augmented_base_from_scratch/unet_pins_5_0.001061_0.999749.hdf5')
+    model.load_weights('checkpoints/not_augmented_base_vgg16_more_images/unet_pins_16_0.000024_1.000000.hdf5')
 
     model.compile(loss='categorical_crossentropy',
                   optimizer=Adadelta(),
@@ -48,7 +48,7 @@ def base_train():
     chckPtsPath = os.path.join(save_weights_path, 'unet_pins_{epoch}_{loss:.6f}_{accuracy:.6f}.hdf5')
     model_checkpoint = ModelCheckpoint(chckPtsPath, monitor='loss', verbose=1, save_best_only=False,
                                        save_weights_only=True)
-    model.fit_generator(G, steps_per_epoch=3000, epochs=20, callbacks=[model_checkpoint], initial_epoch=0)
+    model.fit_generator(G, steps_per_epoch=3000, epochs=25, callbacks=[model_checkpoint], initial_epoch=16)
 
 
 class AugmentedTrainer:
